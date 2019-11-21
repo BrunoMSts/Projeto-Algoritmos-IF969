@@ -10,25 +10,26 @@ class Bem:
 
 
     def __str__(self):
-        formatado = f'''{self.getCodigoDoTipoDeBem()} --- {self.getDescricaoDoTipoDeBem()} --- R${self.getValorDoBem()}
-Descrição: {textwrap.shorten(self.getDescricaoDetalhadaDoBem(), width=80)}'''
+        formatado = f'''
+        {self.getCodigoDoTipoDeBem()} --- {self.getDescricaoDoTipoDeBem()} --- R${self.getValorDoBem()}
+        Descrição: {textwrap.shorten(self.getDescricaoDetalhadaDoBem(), width=80)}'''
         return formatado
 
 
     def __repr__(self):
-        pass
+        return self.__str__()
     
     def comparaBens(listaBens):
         pass
 
     def setCodigoDoTipoDeBem(novo):
-        self.__ = novo
+        self.__codTipoBem = novo
     def setDescricaoDoTipoDeBem(novo):
-        self.__ = novo
+        self.__descTipoBem = novo
     def setDescricaoDetalhadaDoBem(novo):
-        self.__ = novo
+        self.__descDetalhadaBem = novo
     def setValorDoBem(novo):
-        self.__ = novo
+        self.__valorBem = novo
 
     def getCodigoDoTipoDeBem(self): return self.__codTipoBem
     def getDescricaoDoTipoDeBem(self): return self.__descTipoBem

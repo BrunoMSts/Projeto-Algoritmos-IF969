@@ -1,6 +1,6 @@
 class No:
     def __init__(self, dado):
-        self.dado = str(dado)
+        self.dado = dado
         self.prox = None
         self.ant = None
 
@@ -104,12 +104,15 @@ class Lista:
         del lista.cabeca      
 
     def __str__(self):
-        s = '"'
+        self.s = '"'
         pointer = self.cabeca
-        while pointer:
-            s += str(pointer.dado) + ','
-            pointer = pointer.prox
-        return s[:len(s)-1] + '"'
+        if pointer:
+            while pointer:
+                self.s += str(pointer.dado) + ','
+                pointer = pointer.prox
+            return self.s[:len(self.s)-1] + '"'
+        self.s = ''
+        return self.s
 
             
     def __repr__(self):
@@ -137,6 +140,8 @@ class Lista:
             pointer.dado = elem
         else:
             raise IndexError('Index fora de alcance')
+    def __len__(self):
+        return self.tamanho
 
 class Ponteiro(Lista):
     def __init__(self, no):

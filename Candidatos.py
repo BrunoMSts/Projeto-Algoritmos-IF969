@@ -37,9 +37,6 @@ class Candidato(Bem):
 
         return objeto.getValorDoBem()
     
-    def comparaCandidatos(self):
-        pass
-
     def exibeBens(self):
         pass
 
@@ -115,22 +112,14 @@ class Candidato(Bem):
     def getListaDeBens(self): return self.__listaBens
 
     def __str__(self):
-        '''Nome da Urna -- Número da Urna -- Sigla do partido
-            Cargo disputado (UF) Município Nascimento (UF)
-            Resumo dos bens:
-            - Total declarado: (valor formatado como R$)
-            - Total por tipo de bem (imprimir Tipo: valor formatado em R$)
-            Você deve também implementar os métodos de comparação entre candidatos. A
-            comparação deve ser feita com base no nome completo do candidato. Dois candidatos
-            serão iguais somente se tiverem o mesmo nome e o mesmo CPF.'''
-        formatado = f'''{self.getNomeNaUrna()}---{self.getNumeroNaUrna()}---{self.getSiglaDoPartido()}
-{self.getDescricaoDoCargo()} ({self.getSiglaDaUf()}) {self.getNomeDoMunicipioDeNascimento()} {self.getUfNascimento()}
-Resumo dos bens:
-    - Total declarado: 
-    - Total por tipo de bem:
-'''
+        formatado = f'''
+        {self.getNomeNaUrna()} --- {self.getNumeroNaUrna()} --- {self.getSiglaDoPartido()}
+        {self.getDescricaoDoCargo()} ({self.getSiglaDaUf()}) {self.getNomeDoMunicipioDeNascimento()} ({self.getUfNascimento()})
+        Resumo dos bens:
+            - Total declarado: {self.getListaDeBens().getValorDoBem()}
+            - Total por tipo de bem: {self.getListaDeBens().getDescricaoDoTipoDeBem()+ ':' + self.getListaDeBens().getValorDoBem() }
+        '''
         return formatado
 
     def __repr__(self):
-        pass
-    
+        return self.__str__()
