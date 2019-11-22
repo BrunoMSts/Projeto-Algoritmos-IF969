@@ -89,9 +89,6 @@ class Lista:
                 pointer.prox.prox = aux
             else:
                 raise IndexError('Indice não existente')
-    
-    def insereOrdenado(item):
-        pass
 
     def concatenar(self, lista):
         pointer = lista.cabeca
