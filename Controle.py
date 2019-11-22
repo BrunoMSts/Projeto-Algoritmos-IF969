@@ -14,11 +14,11 @@ class Controle:
         for i in range(1, len(arquivo)):
             if 'DT_GERACAO' not in arquivo[i]:
                 candidato = Candidato(arquivo[i][2], arquivo[i][10], arquivo[i][13], arquivo[i][14],
-                                    arquivo[i][17], arquivo[i][15], arquivo[i][16], arquivo[i][20],
-                                    arquivo[i][18], arquivo[i][27], arquivo[i][29], arquivo[i][28],
-                                    arquivo[i][49], arquivo[i][50], arquivo[i][38], arquivo[i][42],
-                                    arquivo[i][44], arquivo[i][46], arquivo[i][35], arquivo[i][37],
-                                    arquivo[i][25], arquivo[i][23], arquivo[i][55])
+                                      arquivo[i][17], arquivo[i][15], arquivo[i][16], arquivo[i][20],
+                                      arquivo[i][18], arquivo[i][27], arquivo[i][29], arquivo[i][28],
+                                      arquivo[i][49], arquivo[i][50], arquivo[i][38], arquivo[i][42],
+                                      arquivo[i][44], arquivo[i][46], arquivo[i][35], arquivo[i][37],
+                                      arquivo[i][25], arquivo[i][23], arquivo[i][55])
                 self.candidatos.anexar(candidato)
         
 
@@ -40,7 +40,7 @@ class Controle:
 
         else: raise ValueError('Você precisa carregar os candidatos primeiro')
 
-    def filtrar(self, partido, uf, municipioNascimento, cargo, valorBens, pleito): #IMPLEMENTAR O VALOR AINDA, É NECESSARIO FORMATAR O VALOR...
+    def filtrar(self, partido, uf, municipioNascimento, cargo, valorBens, pleito):
         listaAux = []
         for candidato in self.candidatos:
             valor = candidato.getValorTotalDeclarado()
@@ -49,43 +49,72 @@ class Controle:
         return listaAux
 
     def comparaOrdemAlfabeticaCrescente(self):
-        listaAux = Lista()
-        for i in range(len(self.candidatos)-1):
-            if self.candidatos[i].getNomeDoCandidato().split()[0][0] < self.candidatos[i+1].getNomeDoCandidato().split()[0][0]:
-                if self.candidatos[i].getNomeDoCandidato().split()[1][0] < self.candidatos[i+1].getNomeDoCandidato().split()[1][0]:
-                    listaAux.anexar(self.candidatos[i])
-                listaAux.anexar(self.candidatos[i])
-        return listaAux
+        listaNomes = []
+        for candidato in self.candidatos:
+            listaNomes.append(candidato.getNomeDoCandidato())
+        listaNomes.sort()
+        return listaNomes
 
     def comparaOrdemAlfabeticaDecrescente(self):
-        listaAux = Lista()
-        for i in range(len(self.candidatos)-1):
-            if self.candidatos[i+1].getNomeDoCandidato().split()[0][0] > self.candidatos[i].getNomeDoCandidato().split()[0][0]:
-                if self.candidatos[i+1].getNomeDoCandidato().split()[1][0] > self.candidatos[i].getNomeDoCandidato().split()[1][0]:
-                    listaAux.anexar(self.candidatos[i+1])
-                listaAux.anexar(self.candidatos[i+1])
-        return listaAux
+        listaNomes = []
+        for candidato in self.candidatos:
+            listaNomes.append(candidato.getNomeDoCandidato())
+        listaNomes.sort(reverse=True)
+        return listaNomes
 
     def comparaTotalDeBensCrescente(self):
-        listaAux = comparaOrdemAlfabeticaCrescente(self)
-        for i in range(len(listaAux)-1):
-            pass
+        listaAux =self.comparaOrdemAlfabeticaCrescente()
+        for i in range(len(self.candidatos)):
+            if len(self.candidatos[i].getListaDeBens()) < len(self.candidatos[i+1].getListaDeBens()):
+                listaAux.inserir(i, listaAux[i+1])
+            else:
+                listaAux.inserir(i, listaAux[i])
+        return listaAux
 
     def comparaTotalDeBensDecrescente(self):
-        pass
+        listaAux = self.comparaOrdemAlfabeticaCrescente()
+        for i in range(len(listaAux)-1):
+            if len(listaAux[i].getListaDeBens()) < len(listaAux[i+1].getListaDeBens()):
+                listaAux.inserir(i, listaAux[i])
+            else:
+                listaAux.inserir(i, listaAux[i+1])
+        return listaAux
 
     def comparaPartidoENomeCrescente(self):
-        pass
+        listaAux = self.comparaTotalDeBensCrescente()
+        for i in range(len(listaAux)-1):
+            if listaAux[i].getSiglaDoPartido()[0] < listaAux[i+1].getSiglaDoPartido[0]:
+                listaAux.inserir(i, listaAux[i])
+            else:
+                listaAux.inserir(i, listaAux[i+1])
+        return listaAux
 
     def comparaPartidoENomeDecrescente(self):
-        pass
+        listaAux = self.comparaTotalDeBensCrescente()
+        for i in range(len(listaAux)-1):
+            if listaAux[i+1].getSiglaDoPartido()[0] > listaAux[i].getSiglaDoPartido[0]:
+                listaAux.inserir(i, listaAux[i+1])
+            else:
+                listaAux.inserir(i, listaAux[i])
+        return listaAux
 
     def comparaDataDeNascimentoCrescente(self):
-        pass
+        listaAux = self.comparaPartidoENomeCrescente()
+        for i in range(len(listaAux)-1):
+            if listaAux[i].getDataDeNascimento() > listaAux[i+1].getDataDeNascimento():
+                listaAux.inserir(i, listaAux[i+1])
+            else:
+                listaAux.inserir(i,listaAux[i])
+        return listaAux
 
     def comparaDataDeNascimentoDecrescente(self):
-        pass
-
+        listaAux = self.comparaPartidoENomeCrescente()
+        for i in range(len(listaAux)-1):
+            if listaAux[i].getDataDeNascimento() < listaAux[i+1].getDataDeNascimento():
+                listaAux.inserir(i, listaAux[i])
+            else:
+                listaAux.inserir(i,listaAux[i+1])
+        return listaAux
         
 
     def media(self, parametro): #UF,CARGO,PARTIDO, OCUPAÇÃO ou DATA DE NASCIMENTO
@@ -132,11 +161,6 @@ class Controle:
         media = sumBens / len(lista)
 
         return print(f'Média: {media:.2f}')
-
-    def incluirBem(self, objBem, candidato):
-        if type(candidato.getListaDeBens) == str:
-            candidato.setListaDeBens() = []
-        candidato.getListaDeBens().anexar(objBem)
 
     def remove(self, criterio):
         for candidato in self.candidatos:

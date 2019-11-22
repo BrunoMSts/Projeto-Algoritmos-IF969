@@ -32,11 +32,6 @@ class Candidato(Bem):
         self.__situacaoCandidatura = situacaoCandidatura
         self.__listaBens = listaBens
 
-    def incluirBem(self, objBem):
-        objeto = objBem
-
-        return objeto.getValorDoBem()
-    
     def exibeBens(self):
         pass
 
@@ -116,6 +111,13 @@ class Candidato(Bem):
             if type(i) != str:
                 self.__total += int(i.getValorDoBem().split(',')[0])
         return self.__total
+
+    
+    def incluirBem(self, objBem):
+        if type(self.getListaDeBens()) == str:
+            self.setListaDeBens([])
+        self.getListaDeBens().anexar(objBem)
+
 
     def __str__(self):
         listaBens = ''
