@@ -110,14 +110,27 @@ class Candidato(Bem):
     def getSituacaoDoCandidatoPosPleito(self): return self.__situacaoCandidatoPosPleito
     def getSituacaoDaCandidatura(self): return self.__situacaoCandidatura
     def getListaDeBens(self): return self.__listaBens
+    def getValorTotalDeclarado(self):
+        self.__total = 0
+        for i in self.getListaDeBens():
+            if type(i) != str:
+                self.__total += int(i.getValorDoBem().split(',')[0])
+        return self.__total
 
     def __str__(self):
+        listaBens = ''
+        totalDeclarado = 0
+        for i in self.getListaDeBens():
+            if type(i) != str:
+                listaBens += i.getDescricaoDetalhadaDoBem() + ' : ' + 'R$' + i.getValorDoBem()+'\n'
+                listaBens += ' '*37
+                totalDeclarado += int(i.getValorDoBem().split(',')[0])
         formatado = f'''
         {self.getNomeNaUrna()} --- {self.getNumeroNaUrna()} --- {self.getSiglaDoPartido()}
         {self.getDescricaoDoCargo()} ({self.getSiglaDaUf()}) {self.getNomeDoMunicipioDeNascimento()} ({self.getUfNascimento()})
         Resumo dos bens:
-            - Total declarado: {self.getListaDeBens().getValorDoBem()}
-            - Total por tipo de bem: {self.getListaDeBens().getDescricaoDoTipoDeBem()+ ':' + self.getListaDeBens().getValorDoBem() }
+            - Total declarado: R${totalDeclarado}
+            - Total por tipo de bem: {listaBens}
         '''
         return formatado
 

@@ -6,10 +6,10 @@ from Leitor import *
 class Controle:
     def __init__(self):
         self.candidatos = Lista()
-        self.candidatosPorEstado = {}
+        self.candidatosOrdenados = Lista()
         self.dicFiltrado = {}
 
-    def carregaCandidatos(self, arquivo): #APROXIMADAMENTE 1 MINUTO PRA CARREGAR
+    def carregaCandidatos(self, arquivo): #APROXIMADAMENTE 40 - 60 SEGUNDOS PRA CARREGAR
         arquivo = ler(arquivo)
         for i in range(1, len(arquivo)):
             if 'DT_GERACAO' not in arquivo[i]:
@@ -27,64 +27,122 @@ class Controle:
             arquivo = ler(arquivo)
             bens = {}
             for i in range(1, len(arquivo)):
+                bens[arquivo[i][11]] = []
+
+            for i in range(1, len(arquivo)):
                 bemCandidato = Bem(arquivo[i][13], arquivo[i][14], arquivo[i][15], arquivo[i][16])
-                bens[arquivo[i][11]] = bemCandidato
+                bens[arquivo[i][11]].append(bemCandidato)
 
             for candidato in self.candidatos:
                 if candidato.getIdDoCandidato() in bens:
                     candidato.setListaDeBens(bens[str(candidato.getIdDoCandidato())])
+                
 
         else: raise ValueError('Você precisa carregar os candidatos primeiro')
 
-    def filtraCandidatos(self, filtro, valor=0): #IMPLEMENTAR O VALOR AINDA, É NECESSARIO FORMATAR O VALOR...
-        self.dicFiltrado[filtro] = []
+    def filtrar(self, partido, uf, municipioNascimento, cargo, valorBens, pleito): #IMPLEMENTAR O VALOR AINDA, É NECESSARIO FORMATAR O VALOR...
+        listaAux = []
         for candidato in self.candidatos:
-            if type(candidato.getListaDeBens()) != str:
-                filtros = [candidato.getNomeDoPartido(), candidato.getSiglaDaUf(),
-                        candidato.getNomeDoMunicipioDeNascimento(), candidato.getCodigoDoCargo()]
-                valorBem = candidato.getListaDeBens().getValorDoBem()
-                if filtro in filtros:
-                    self.dicFiltrado[filtro].append(candidato)
+            valor = candidato.getValorTotalDeclarado()
+            if (candidato.getSiglaDoPartido() == partido) and (candidato.getSiglaDaUf() == uf) and (candidato.getNomeDoMunicipioDeNascimento() == municipioNascimento) and (candidato.getDescricaoDoCargo() == cargo) and (valor > valorBens) and (candidato.getSituacaoDoCandidatoPosPleito() == pleito):
+                listaAux.append(candidato)
+        return listaAux
 
-        return self.dicFiltrado
+    def comparaOrdemAlfabeticaCrescente(self):
+        listaAux = Lista()
+        for i in range(len(self.candidatos)-1):
+            if self.candidatos[i].getNomeDoCandidato().split()[0][0] < self.candidatos[i+1].getNomeDoCandidato().split()[0][0]:
+                if self.candidatos[i].getNomeDoCandidato().split()[1][0] < self.candidatos[i+1].getNomeDoCandidato().split()[1][0]:
+                    listaAux.anexar(self.candidatos[i])
+                listaAux.anexar(self.candidatos[i])
+        return listaAux
 
-    def separaTudo(self): #SEPARA TUDO DE UMA VEZ, POR ESTADO!
-        for candidato in self.candidatos:
-            if candidato.getSiglaDaUf() in self.candidatosPorEstado:
-                self.candidatosPorEstado[candidato.getSiglaDaUf()].append(candidato)
-            else:
-                self.candidatosPorEstado[candidato.getSiglaDaUf()] = []
+    def comparaOrdemAlfabeticaDecrescente(self):
+        listaAux = Lista()
+        for i in range(len(self.candidatos)-1):
+            if self.candidatos[i+1].getNomeDoCandidato().split()[0][0] > self.candidatos[i].getNomeDoCandidato().split()[0][0]:
+                if self.candidatos[i+1].getNomeDoCandidato().split()[1][0] > self.candidatos[i].getNomeDoCandidato().split()[1][0]:
+                    listaAux.anexar(self.candidatos[i+1])
+                listaAux.anexar(self.candidatos[i+1])
+        return listaAux
+
+    def comparaTotalDeBensCrescente(self):
+        listaAux = comparaOrdemAlfabeticaCrescente(self)
+        for i in range(len(listaAux)-1):
+            pass
+
+    def comparaTotalDeBensDecrescente(self):
+        pass
+
+    def comparaPartidoENomeCrescente(self):
+        pass
+
+    def comparaPartidoENomeDecrescente(self):
+        pass
+
+    def comparaDataDeNascimentoCrescente(self):
+        pass
+
+    def comparaDataDeNascimentoDecrescente(self):
+        pass
+
         
 
-    def comparaCandidatos(self, nome1, nome2):
-        nomesCandidatos = {}
-        for candidato in self.candidatos:
-            nomesCandidatos[candidato.getNomeDoCandidato()] = candidato.getCpf()
-        
-        if (nome1.upper() in nomesCandidatos) and (nome2.upper() in nomesCandidatos):
-            if nomesCandidatos[nome1.upper()] == nomesCandidatos[nome2.upper()]:
-                return True
-            return False
-
-    def media(self, parametro):
-        listaMedia = []
-        total = 0
+    def media(self, parametro): #UF,CARGO,PARTIDO, OCUPAÇÃO ou DATA DE NASCIMENTO
+        listaMedia = self.separaTudo()
+        lista = {}
+        sumBens = 0
+        media = ''
         for candidato in self.candidatos:
             if parametro == candidato.getSiglaDaUf():
-                listaMedia.append(candidato)
-                total += 1
+                if candidato.getIdDoCandidato() not in lista and type(candidato.getListaDeBens()) != str:
+                    lista[candidato.getIdDoCandidato()] = []
+                if type(candidato.getListaDeBens()) != str:
+                    lista[candidato.getIdDoCandidato()].append(candidato.getListaDeBens())
+                    sumBens += len(candidato.getListaDeBens())
+
             elif parametro == candidato.getDescricaoDoCargo():
-                listaMedia.append(candidato)
-                total += 1
-            elif parametro == candidato.getNomeDoPartido():
-                listaMedia.append(candidato)
-                total += 1
-            elif parametro == candidato.getDataDeNascimento():
-                listaMedia.append(candidato)
-                total += 1
-            elif paramtero == candidato.getDescricaoDaOcupacao():
-                listaMedia.append(candidato)
-                total += 1
-        
-        return 'Média', len(listaMedia) // total #IMPORTANTE VERIFICAR SE A LISTA DE BENS È UMA LISTA ENCADEADA
-        
+                if candidato.getIdDoCandidato() not in lista and type(candidato.getListaDeBens()) != str:
+                    lista[candidato.getIdDoCandidato()] = []
+                if type(candidato.getListaDeBens()) != str:
+                    lista[candidato.getIdDoCandidato()].append(candidato.getListaDeBens())
+                    sumBens += len(candidato.getListaDeBens())
+
+            elif parametro == candidato.getNomeDoPartido() and type(candidato.getListaDeBens()) != str:
+                if candidato.getIdDoCandidato() not in lista:
+                    lista[candidato.getIdDoCandidato()] = []
+                if type(candidato.getListaDeBens()) != str:
+                    lista[candidato.getIdDoCandidato()].append(candidato.getListaDeBens())
+                    sumBens += len(candidato.getListaDeBens())
+
+            elif parametro == candidato.getDataDeNascimento() and type(candidato.getListaDeBens()) != str:
+                if candidato.getIdDoCandidato() not in lista:
+                    lista[candidato.getIdDoCandidato()] = []
+                if type(candidato.getListaDeBens()) != str:
+                    lista[candidato.getIdDoCandidato()].append(candidato.getListaDeBens())
+                    sumBens += len(candidato.getListaDeBens())
+
+            elif parametro == candidato.getDescricaoDaOcupacao() and type(candidato.getListaDeBens()) != str:
+                if candidato.getIdDoCandidato() not in lista:
+                    lista[candidato.getIdDoCandidato()] = []
+                if type(candidato.getListaDeBens()) != str:
+                    lista[candidato.getIdDoCandidato()].append(candidato.getListaDeBens())
+                    sumBens += len(candidato.getListaDeBens())
+
+        media = sumBens / len(lista)
+
+        return print(f'Média: {media:.2f}')
+
+    def incluirBem(self, objBem, candidato):
+        if type(candidato.getListaDeBens) == str:
+            candidato.setListaDeBens() = []
+        candidato.getListaDeBens().anexar(objBem)
+
+    def remove(self, criterio):
+        for candidato in self.candidatos:
+            if candidato.getSituacaoDaCandidatura() == criterio or candidato.getSituacaoDoCandidatoPosPleito() == criterio:
+                i = self.candidatos.indice(candidato)
+                self.candidatos.selecionar(i)
+        return self.candidatos
+                
+         
