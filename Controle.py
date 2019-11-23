@@ -62,14 +62,33 @@ class Controle:
         for i in range(len(listaNomes)):
             listaOrdenada.anexar(min(listaNomes))
             listaNomes.remove(min(listaNomes))
-        return listaOrdenada
+        listaBens = ''
+        totalDeclarado = 0
+        for i in range(len(listaOrdenada)):
+            if type(candidato) != str and candidato.getNomeDoCandidato() == listaOrdenada[i]:
+                listaBens += candidato.getListaDeBens().getDescricaoDetalhadaDoBem() + ' : ' + 'R$' + candidato.getListaDeBens().getValorDoBem()+'\n'
+                listaBens += ' '*37
+                totalDeclarado += int(candidato.getListaDeBens().getValorDoBem().split(',')[0])
+        formatado = f'''
+        {candidato.getNomeNaUrna()} --- {candidato.getNumeroNaUrna()} --- {candidato.getSiglaDoPartido()}
+        {candidato.getDescricaoDoCargo()} ({candidato.getSiglaDaUf()}) {candidato.getNomeDoMunicipioDeNascimento()} ({candidato.getUfNascimento()})
+        Resumo dos bens:
+            - Total declarado: R${totalDeclarado}
+            - Total por tipo de bem: {listaBens}
+        '''
+
 
     def comparaOrdemAlfabeticaDecrescente(self):
         listaNomes = []
+        listaOrdenada = Lista()
+
         for candidato in self.candidatos:
             listaNomes.append(candidato.getNomeDoCandidato())
-        listaNomes.sort(reverse=True)
-        return listaNomes
+
+        for i in range(len(listaNomes)):
+            listaOrdenada.anexar(max(listaNomes))
+            listaNomes.remove(max(listaNomes))
+        return listaOrdenada
 
     def comparaTotalDeBensCrescente(self):
         listaAux =self.comparaOrdemAlfabeticaCrescente()
