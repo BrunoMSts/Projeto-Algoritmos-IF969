@@ -19,13 +19,13 @@ class Bem:
     def __repr__(self):
         return self.__str__()
   
-    def setCodigoDoTipoDeBem(novo):
+    def setCodigoDoTipoDeBem(self, novo):
         self.__codTipoBem = novo
-    def setDescricaoDoTipoDeBem(novo):
+    def setDescricaoDoTipoDeBem(self, novo):
         self.__descTipoBem = novo
-    def setDescricaoDetalhadaDoBem(novo):
+    def setDescricaoDetalhadaDoBem(self, novo):
         self.__descDetalhadaBem = novo
-    def setValorDoBem(novo):
+    def setValorDoBem(self, novo):
         self.__valorBem = novo
 
     def getCodigoDoTipoDeBem(self): return self.__codTipoBem

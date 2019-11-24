@@ -170,6 +170,8 @@ if __name__ == '__main__':
 
             Buscar candidato pelo indice :               c.candidatos[indice]
             Ver bens de um candidato :                   c.candidatos[indice].getListaDeBens() #FUNÇÕES get DO ARQUIVO CANDIDATO FUNCIONAM AQ, ASSIM COMO AS FUNÇÕES get dos Bens
+            Criar um Objeto bem pra poder ser incluido : objetoBem = Bem(codTipoBem, descTipoBem, descDetalhadaBem, valorBem)
+            Incluir um bem :                             c.canditatos[indice].incluirBem(objetoBem)
             Imprime candidatos em ordem Alfabética :     c.OrdemAlfabeticaCrescente() / c.OrdemAlfabeticaDecrescente()
             Imprime candidatos por total de bens :       c.TotalDeBensCrescente() / c.TotalDeBensDecrescente()
             Imprime candidatos Data de Nascimento :      c.DataDeNascimentoCrescente() / c.DataDeNascimentoDecrescente()
@@ -177,6 +179,7 @@ if __name__ == '__main__':
             Separa Candidatos por Estado :               c.separaTudo()
             tira a media de determinado parametro :      c.media() #PARAMETRO: UF ou DESCRIÇÃO DO CARGO ou DATA DE NASCIMENTO ou NOME DO PARTIDO ou OCUPAÇÃO
             remover um candidato :                       c.remove() #PARAMETRO: NOME DO CANDIDATO, UF, SITUAÇÃO POS PLEITO ou SITUAÇÃO CANDIDATURA 
+
 
             possui varias outras funções no entanto coloquei as mais importantes para acelerar a correção
 
