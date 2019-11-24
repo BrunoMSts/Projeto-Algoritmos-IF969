@@ -116,7 +116,7 @@ class Candidato(Bem):
     def incluirBem(self, objBem):
         if type(self.getListaDeBens()) == str:
             self.setListaDeBens([])
-        self.getListaDeBens().anexar(objBem)
+        self.getListaDeBens().append(objBem)
 
 
     def __str__(self):
