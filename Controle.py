@@ -9,6 +9,9 @@ class Controle:
         self.candidatosOrdenados = Lista()
         self.dicFiltrado = {}
         self.candidatosEstado = {}
+        self.candidatosNomes = {}
+        self.candidatosBens = {}
+        self.candidatosData = {}
         self.bensCarregados = False
 
     def carregaCandidatos(self, arquivo): #APROXIMADAMENTE 40 - 60 SEGUNDOS PRA CARREGAR
@@ -21,6 +24,8 @@ class Controle:
                                       arquivo[i][49], arquivo[i][50], arquivo[i][38], arquivo[i][42],
                                       arquivo[i][44], arquivo[i][46], arquivo[i][35], arquivo[i][37],
                                       arquivo[i][25], arquivo[i][23], arquivo[i][55])
+                self.candidatosData[arquivo[i][38]] = candidato
+                self.candidatosNomes[arquivo[i][17]] = candidato
                 self.candidatos.anexar(candidato)
         
 
@@ -38,6 +43,7 @@ class Controle:
             for candidato in self.candidatos:
                 if candidato.getIdDoCandidato() in bens:
                     candidato.setListaDeBens(bens[str(candidato.getIdDoCandidato())])
+                    self.candidatosBens[len(candidato.getListaDeBens())] = candidato
             self.bensCarregados = True
             return self.bensCarregados
                 
@@ -52,97 +58,42 @@ class Controle:
                 listaAux.append(candidato)
         return listaAux
 
-    def comparaOrdemAlfabeticaCrescente(self):
-        listaNomes = []
-        listaOrdenada = Lista()
-
-        for candidato in self.candidatos:
-            listaNomes.append(candidato.getNomeDoCandidato())
-
-        for i in range(len(listaNomes)):
-            listaOrdenada.anexar(min(listaNomes))
-            listaNomes.remove(min(listaNomes))
-        listaBens = ''
-        totalDeclarado = 0
-        for i in range(len(listaOrdenada)):
-            if type(candidato) != str and candidato.getNomeDoCandidato() == listaOrdenada[i]:
-                listaBens += candidato.getListaDeBens().getDescricaoDetalhadaDoBem() + ' : ' + 'R$' + candidato.getListaDeBens().getValorDoBem()+'\n'
-                listaBens += ' '*37
-                totalDeclarado += int(candidato.getListaDeBens().getValorDoBem().split(',')[0])
-        formatado = f'''
-        {candidato.getNomeNaUrna()} --- {candidato.getNumeroNaUrna()} --- {candidato.getSiglaDoPartido()}
-        {candidato.getDescricaoDoCargo()} ({candidato.getSiglaDaUf()}) {candidato.getNomeDoMunicipioDeNascimento()} ({candidato.getUfNascimento()})
-        Resumo dos bens:
-            - Total declarado: R${totalDeclarado}
-            - Total por tipo de bem: {listaBens}
-        '''
+    def OrdemAlfabeticaCrescente(self):
+        a = self.candidatosNomes.copy()
+        for i in range(len(a)):
+            print(a[min(a)])
+            a.pop(min(a))
 
 
-    def comparaOrdemAlfabeticaDecrescente(self):
-        listaNomes = []
-        listaOrdenada = Lista()
+    def OrdemAlfabeticaDecrescente(self):
+        a = self.candidatosNomes.copy()
+        for i in range(len(a)):
+            print(a[max(a)])
+            a.pop(max(a))
 
-        for candidato in self.candidatos:
-            listaNomes.append(candidato.getNomeDoCandidato())
+    def TotalDeBensCrescente(self):
+        a = self.candidatosBens.copy()
+        for i in range(len(a)):
+            print(a[min(a)])
+            a.pop(min(a))
 
-        for i in range(len(listaNomes)):
-            listaOrdenada.anexar(max(listaNomes))
-            listaNomes.remove(max(listaNomes))
-        return listaOrdenada
+    def TotalDeBensDecrescente(self):
+        a = self.candidatosBens.copy()
+        for i in range(len(a)):
+            print(a[max(a)])
+            a.pop(max(a))
 
-    def comparaTotalDeBensCrescente(self):
-        listaAux =self.comparaOrdemAlfabeticaCrescente()
-        for i in range(len(self.candidatos)):
-            if len(self.candidatos[i].getListaDeBens()) < len(self.candidatos[i+1].getListaDeBens()):
-                listaAux.inserir(i, listaAux[i+1])
-            else:
-                listaAux.inserir(i, listaAux[i])
-        return listaAux
+    def DataDeNascimentoCrescente(self):
+        a = self.candidatosData.copy()
+        for i in range(len(a)):
+            print('Data Nascimento :',min(a),'\n',a[min(a)])
+            a.pop(min(a))
 
-    def comparaTotalDeBensDecrescente(self):
-        listaAux = self.comparaOrdemAlfabeticaCrescente()
-        for i in range(len(listaAux)-1):
-            if len(listaAux[i].getListaDeBens()) < len(listaAux[i+1].getListaDeBens()):
-                listaAux.inserir(i, listaAux[i])
-            else:
-                listaAux.inserir(i, listaAux[i+1])
-        return listaAux
-
-    def comparaPartidoENomeCrescente(self):
-        listaAux = self.comparaTotalDeBensCrescente()
-        for i in range(len(listaAux)-1):
-            if listaAux[i].getSiglaDoPartido()[0] < listaAux[i+1].getSiglaDoPartido[0]:
-                listaAux.inserir(i, listaAux[i])
-            else:
-                listaAux.inserir(i, listaAux[i+1])
-        return listaAux
-
-    def comparaPartidoENomeDecrescente(self):
-        listaAux = self.comparaTotalDeBensCrescente()
-        for i in range(len(listaAux)-1):
-            if listaAux[i+1].getSiglaDoPartido()[0] > listaAux[i].getSiglaDoPartido[0]:
-                listaAux.inserir(i, listaAux[i+1])
-            else:
-                listaAux.inserir(i, listaAux[i])
-        return listaAux
-
-    def comparaDataDeNascimentoCrescente(self):
-        listaAux = self.comparaPartidoENomeCrescente()
-        for i in range(len(listaAux)-1):
-            if listaAux[i].getDataDeNascimento() > listaAux[i+1].getDataDeNascimento():
-                listaAux.inserir(i, listaAux[i+1])
-            else:
-                listaAux.inserir(i,listaAux[i])
-        return listaAux
-
-    def comparaDataDeNascimentoDecrescente(self):
-        listaAux = self.comparaPartidoENomeCrescente()
-        for i in range(len(listaAux)-1):
-            if listaAux[i].getDataDeNascimento() < listaAux[i+1].getDataDeNascimento():
-                listaAux.inserir(i, listaAux[i])
-            else:
-                listaAux.inserir(i,listaAux[i+1])
-        return listaAux
+    def DataDeNascimentoDecrescente(self):
+        a = self.candidatosData.copy()
+        for i in range(len(a)):
+            print('Data Nascimento :',max(a),'\n',a[max(a)])
+            a.pop(max(a))
         
     def separaTudo(self):
         for candidato in self.candidatos:
@@ -199,9 +150,34 @@ class Controle:
 
     def remove(self, criterio):
         for candidato in self.candidatos:
-            if candidato.getSituacaoDaCandidatura() == criterio or candidato.getSituacaoDoCandidatoPosPleito() == criterio:
+            if candidato.getSituacaoDaCandidatura() == criterio or candidato.getSituacaoDoCandidatoPosPleito() == criterio or candidato.getNomeDoCandidato() == criterio or candidato.getSiglaDaUf() == criterio:
                 i = self.candidatos.indice(candidato)
                 self.candidatos.selecionar(i)
         return self.candidatos
                 
-         
+if __name__ == '__main__':
+    print('''
+    Melhor fazer tudo direto do terminal do python é mais rápido para verificar as funções
+    Os candidatos levam em média 80 segundos para serem carregados
+    Carregar os bens leva em torno de 30 - 40 segundos
+    O print leva em torno de 2:30 - 3:30 minutos pra iniciar
+                                                
+                                            ----- Funções -----
+            importar o modulo controle :                 from Controle import *
+            iniciar o modulo controle :                  c = Controle()
+            carregando candidatos :                      c.carregaCandidatos('candidatos')
+            carregando os bens :                         c.carregaBens('bens')
+
+            Buscar candidato pelo indice :               c.candidatos[indice]
+            Ver bens de um candidato :                   c.candidatos[indice].getListaDeBens() #FUNÇÕES get DO ARQUIVO CANDIDATO FUNCIONAM AQ, ASSIM COMO AS FUNÇÕES get dos Bens
+            Imprime candidatos em ordem Alfabética :     c.OrdemAlfabeticaCrescente() / c.OrdemAlfabeticaDecrescente()
+            Imprime candidatos por total de bens :       c.TotalDeBensCrescente() / c.TotalDeBensDecrescente()
+            Imprime candidatos Data de Nascimento :      c.DataDeNascimentoCrescente() / c.DataDeNascimentoDecrescente()
+            Filtrar um candidato :                       c.filtrar(partido, uf, municipioNascimento, cargo, valorBens, pleito)
+            Separa Candidatos por Estado :               c.separaTudo()
+            tira a media de determinado parametro :      c.media() #PARAMETRO: UF ou DESCRIÇÃO DO CARGO ou DATA DE NASCIMENTO ou NOME DO PARTIDO ou OCUPAÇÃO
+            remover um candidato :                       c.remove() #PARAMETRO: NOME DO CANDIDATO, UF, SITUAÇÃO POS PLEITO ou SITUAÇÃO CANDIDATURA 
+
+            possui varias outras funções no entanto coloquei as mais importantes para acelerar a correção
+
+    ''')
